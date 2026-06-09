@@ -1,4 +1,231 @@
-# DevOps---Automation-Monitoring<img width="940" height="205" alt="image" src="https://github.com/user-attachments/assets/8030cfa6-46ac-4d12-90ab-700a000219b9" />
+# DevOps---Automation-Monitoring
+
+### First, understand what we're actually building
+
+The assignment wants us to deploy a MERN application.
+
+MERN =
+
+M = MongoDB (Database)
+E = Express.js (Backend API)
+R = React.js (Frontend UI)
+N = Node.js (Runtime)
+
+The project repository is:
+
+TravelMemory GitHub Repository
+
+User Browser
+      |
+      v
+React Frontend
+      |
+      v
+Express Backend
+      |
+      v
+MongoDB Database
+
+AWS will provide servers.
+
+Terraform will create AWS infrastructure automatically.
+
+Ansible will install software automatically.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Let's understand what we're going to create.
+
+The assignment requires:
+
+AWS Cloud
+│
+├── VPC
+│
+├── Public Subnet
+│      │
+│      └── EC2 Web Server
+│
+├── Private Subnet
+│      │
+│      └── EC2 Database Server
+│
+├── Internet Gateway
+│
+└── NAT Gateway
+
+Think of it as:
+
+Internet
+    |
+    |
+Web Server (Public)
+    |
+    |
+Database Server (Private)
+
+Users can reach the web server.
+
+Nobody can directly reach the database server.
+
+This is considered good security practice.
+
+==============================================================================================================
+
+## Phase 2.1 – Create Terraform Project Files
+
+Go to: cd ~/Desktop/HeroVired/MERN-AWS-Assignment/terraform
+
+Create These Files
+
+Inside terraform/
+
+Create:
+
+terraform/
+│
+├── provider.tf
+├── variables.tf
+├── vpc.tf
+├── ec2.tf
+├── security_groups.tf
+├── outputs.tf
+└── terraform.tfvars
+
+## Through VS code
+
+### File 1: provider.tf
+
+Open provider.tf
+
+Paste:
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+### File 2: variables.tf
+
+Paste:
+
+variable "aws_region" {
+  default = "ap-south-1"
+}
+
+variable "project_name" {
+  default = "travelmemory"
+}
+
+### File 3: terraform.tfvars
+
+Paste:
+
+aws_region = "ap-south-1"
+
+### What These Files Mean
+
+provider.tf > Tells Terraform: "Use AWS as cloud provider."
+variables.tf > Stores reusable values. > Instead of writing: ap-south-1, 20 times we store it once.
+terraform.tfvars > Actual values for variables.
+
+### Verify AWS Region
+
+For this project I am using: Asia Pacific (Mumbai)
+ap-south-1
+because I am in India and Free Tier resources are available for me to use.
+
+### What We'll Create First
+
+Before launching servers, we need a network.
+
+Think of AWS like a city.
+
+Before building houses (EC2 servers), we need:
+
+City (VPC)
+│
+├── Public Area
+│
+└── Private Area
+
+In AWS terms:
+
+VPC
+│
+├── Public Subnet
+│
+└── Private Subnet
+
+### Step 7: Open vpc.tf
+
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  tags = {
+    Name = "travelmemory-vpc"
+  }
+}
+
+### What This Means
+
+Don't memorize this. Just understand:
+
+10.0.0.0/16
+
+is the private network range.
+
+Think of it like:
+
+TravelMemory Colony
+
+inside AWS.
+
+Everything we create later will live inside this VPC.
+
+### Step 8: Validate Terraform Code
+
+After saving vpc.tf, run:
+
+## What you’ve successfully achieved:
+
+Terraform created AWS infrastructure (VPC, subnets, EC2, SGs)
+EC2 instance is running in a public subnet
+SSH access configured correctly with key permissions fixed
+Ansible configured the server (Node.js + app setup)
+Backend is running on port 5000 and connected to MongoDB Atlas
+React frontend is running on port 3000
+Security Group correctly opened for required ports
+Browser successfully reached http://13.201.60.91:3000
+
+So your MERN stack is now deployed on AWS and accessible publicly.
+
+## Final status
+
+Your deployment is now:
+
+AWS + Terraform + Ansible + MERN = SUCCESSFUL FULL STACK DEPLOYMENT
+
+<img width="1073" height="552" alt="image" src="https://github.com/user-attachments/assets/5fce05c2-b104-498f-8911-80fe66a22cec" />
+<img width="1022" height="310" alt="image" src="https://github.com/user-attachments/assets/1c54b7a7-164e-4f33-a3e6-0bf13f4d283a" />
+
+
+
+
+
+
+
+<img width="940" height="205" alt="image" src="https://github.com/user-attachments/assets/8030cfa6-46ac-4d12-90ab-700a000219b9" />
 
 Deploying a MERN Application on AWS (Terraform + Ansible)
 
