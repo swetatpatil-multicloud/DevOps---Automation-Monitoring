@@ -1,0 +1,38 @@
+---
+- name: Configure Web Server
+  hosts: web
+  become: yes
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - git
+          - curl
+        state: present
+
+    - name: Install Node.js 20
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+        apt-get install -y nodejs
+      args:
+        executable: /bin/bash
+
+    - name: Verify Node version
+      command: node -v
+      register: node_version
+
+    - debug:
+        var: node_version.stdout
+
+    - name: Clone TravelMemory repository
+      git:
+        repo: 'https://github.com/UnpredictablePrashant/TravelMemory.git'
+        dest: /home/ubuntu/TravelMemory
+        clone: yes
+        update: yes

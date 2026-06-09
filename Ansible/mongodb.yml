@@ -1,0 +1,11 @@
+- name: MongoDB Configuration (Atlas)
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Create .env file for backend
+      copy:
+        dest: /home/ubuntu/TravelMemory/backend/.env
+        content: |
+          PORT=5000
+          MONGO_URI=mongodb+srv://Swetatpatil:Sweta25@swetapatil.nlqpeax.mongodb.net/travelmemory?retryWrites=true&w=majority&appName=Swetapatil
